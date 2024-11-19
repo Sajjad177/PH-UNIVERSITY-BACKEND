@@ -1,10 +1,12 @@
-export type UserName = {
+import { Model } from 'mongoose';
+
+export type TUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
 
-export type Guardian = {
+export type TGuardian = {
   fatherName: string;
   fatherContactNo: string;
   fatherOccupation: string;
@@ -13,16 +15,16 @@ export type Guardian = {
   motherOccupation: string;
 };
 
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   contactNo: string;
   occupation: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: UserName;
+  name: TUserName;
   age: number;
   email: string;
   gender: 'male' | 'female';
@@ -32,8 +34,29 @@ export type Student = {
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImage?: string;
   isActive: 'active' | 'inactive';
 };
+
+//TODO : create a custom instance method-----------:
+
+// export type StudentMethods = {
+//   isUserExists(id: string): Promise<TStudent | null>;
+// };
+
+// export type StudentCustomModel = Model<
+//   TStudent,
+//   Record<string, never>,
+//   StudentMethods
+// >;
+
+
+
+//TODO : create a custom static method-----------:
+
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
+}
+

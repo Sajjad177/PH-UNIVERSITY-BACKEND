@@ -56,10 +56,11 @@ const localGuardianValidationZodSchema = z.object({
 const studentValidationZodSchema = z.object({
   id: z.string().nonempty('ID is required'),
   name: userNameValidationZodSchema,
+  age: z.number().min(18, { message: 'Age must be at least 18' }),
   gender: z.enum(['male', 'female'], {
     message: 'Provided value is not a valid gender',
   }),
-  age: z.number().min(18, { message: 'Age must be at least 18' }),
+
   dateOfBirth: z.string().optional(),
   email: z
     .string()
