@@ -43,6 +43,9 @@ const localGuardianValidationSchema = Joi.object({
 
 const studentValidationSchema = Joi.object({
   id: Joi.string().required(),
+  password: Joi.string().trim().required(),
+  // .max(15, 'Password cannot be more than 15 characters')
+  // .min(6, 'Password cannot be less than 6 characters'),
   name: userNameSchema.required(),
   gender: Joi.string()
     .valid('male', 'female')
