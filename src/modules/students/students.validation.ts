@@ -75,6 +75,7 @@ const studentValidationSchema = Joi.object({
   localGuardian: localGuardianValidationSchema.required(),
   profileImage: Joi.string().uri(),
   isActive: Joi.string().valid('active', 'inactive').default('active'),
+  isDeleted: Joi.boolean().default(false),
 });
 
 export default studentValidationSchema;

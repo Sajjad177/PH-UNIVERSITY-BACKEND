@@ -1,10 +1,17 @@
-import { Router } from 'express';
+import { RequestHandler, Router } from 'express';
 import { StudentController } from './students.controller';
 
 const router = Router();
 
-router.post('/create-student', StudentController.createStudent);
-router.get('/get-students', StudentController.getAllStudents);
-router.get('/get-student/:id', StudentController.getSingleStudent);
+router.post(
+  '/create-student',
+  StudentController.createStudent as RequestHandler,
+);
+router.get('/get-students', StudentController.getAllStudents as RequestHandler);
+router.get(
+  '/get-student/:id',
+  StudentController.getSingleStudent as RequestHandler,
+);
+router.delete('/:id', StudentController.deleteStudent as RequestHandler);
 
 export const StudentRoutes = router;

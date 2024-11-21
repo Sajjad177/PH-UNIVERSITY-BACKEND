@@ -55,12 +55,9 @@ const localGuardianValidationZodSchema = z.object({
 
 const studentValidationZodSchema = z.object({
   id: z.string().nonempty('ID is required'),
-  password: z
-    .string()
-    .trim()
-    .nonempty('Password is required'),
-    // .max(8, { message: 'Password cannot be more than 8 characters' })
-    // .min(6, { message: 'Password cannot be less than 6 characters' }),
+  password: z.string().trim().nonempty('Password is required'),
+  // .max(8, { message: 'Password cannot be more than 8 characters' })
+  // .min(6, { message: 'Password cannot be less than 6 characters' }),
   name: userNameValidationZodSchema,
   age: z.number().min(18, { message: 'Age must be at least 18' }),
   gender: z.enum(['male', 'female'], {
@@ -87,6 +84,7 @@ const studentValidationZodSchema = z.object({
   localGuardian: localGuardianValidationZodSchema,
   profileImage: z.string().optional(),
   isActive: z.enum(['active', 'inactive']).default('active'),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentValidationZodSchema;

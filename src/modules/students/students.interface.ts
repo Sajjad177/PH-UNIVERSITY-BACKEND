@@ -39,6 +39,7 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImage?: string;
   isActive: 'active' | 'inactive';
+  isDeleted: boolean;
 };
 
 //TODO : create a custom instance method-----------:

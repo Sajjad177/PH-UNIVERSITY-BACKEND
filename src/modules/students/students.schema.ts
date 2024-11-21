@@ -157,16 +157,22 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     profileImage: { type: String },
     isActive: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: true, toJSON: { virtuals: true } },
 );
+
+//! virtual type this is vary important ----------- -> 
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+}); 
 
 // will work on save and create :
 //TODO : createing pre save hook or middleware :
 
 studentSchema.pre('save', async function (next) {
   console.log(this, 'pre save hook : we will save the data');
-  // will hash the password --------------------------------:
+  // will hash the password -------------------------:
   this.password = await bcrypt.hash(
     this.password,
     Number(config.bcrypt_salt_rounds),
@@ -180,6 +186,19 @@ studentSchema.pre('save', async function (next) {
 
 studentSchema.post('save', function (doc, next) {
   doc.password = '';
+  next();
+});
+
+// Query Middleware :
+// if i add find query then it will apply this query to the find query only
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// if i add findOne query then it will apply this query to the findOne query only
+studentSchema.pre('findOne', function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
   next();
 });
 
