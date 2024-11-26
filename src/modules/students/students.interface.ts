@@ -30,6 +30,7 @@ export type TStudent = {
   age: number;
   email: string;
   gender: 'male' | 'female';
+
   dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -54,11 +55,8 @@ export type TStudent = {
 //   StudentMethods
 // >;
 
-
-
 //TODO : create a custom static method-----------:
 
 export interface StudentModel extends Model<TStudent> {
   isUserExists(id: string): Promise<TStudent | null>;
 }
-

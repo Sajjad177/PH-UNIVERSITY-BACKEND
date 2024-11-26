@@ -1,17 +1,13 @@
 import { model, Schema } from 'mongoose';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
 
 import {
   StudentModel,
-  // StudentCustomModel,
-  // StudentMethods,
   TGuardian,
   TLocalGuardian,
   TStudent,
   TUserName,
 } from './students.interface';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -93,16 +89,12 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
     user: {
-      type: Schema.Types.ObjectId, // type of user id
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'User is required'],
       unique: true,
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: [6, 'Password cannot be less than 6 characters'],
-    },
+
     name: {
       type: userNameSchema,
       required: [true, 'Name is required'],
@@ -171,28 +163,6 @@ studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
-// will work on save and create :
-//TODO : createing pre save hook or middleware :
-
-studentSchema.pre('save', async function (next) {
-  console.log(this, 'pre save hook : we will save the data');
-  // will hash the password -------------------------:
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-
-  next();
-});
-
-//TODO : createing post save hook or middleware :
-//remove password before sending the response :
-
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
-
 // Query Middleware :
 // if i add find query then it will apply this query to the find query only
 studentSchema.pre('find', function (next) {
@@ -205,12 +175,6 @@ studentSchema.pre('findOne', function (next) {
   this.findOne({ isDeleted: { $ne: true } });
   next();
 });
-
-//TODO : create a custom instance method-----------:
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 //TODO : create a custom static method-----------:
 studentSchema.statics.isUserExists = async function (id: string) {
