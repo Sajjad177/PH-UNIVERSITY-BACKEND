@@ -92,11 +92,16 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User is required'],
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
-      // maxlength: [15, 'Password cannot be more than 8 characters'],
-      // minlength: [6, 'Password cannot be less than 6 characters'],
+      minlength: [6, 'Password cannot be less than 6 characters'],
     },
     name: {
       type: userNameSchema,
@@ -156,16 +161,15 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local Guardian is required'],
     },
     profileImage: { type: String },
-    isActive: { type: String, enum: ['active', 'inactive'], default: 'active' },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true, toJSON: { virtuals: true } },
 );
 
-//! virtual type this is vary important ----------- -> 
+//! virtual type this is vary important ----------- ->
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-}); 
+});
 
 // will work on save and create :
 //TODO : createing pre save hook or middleware :
