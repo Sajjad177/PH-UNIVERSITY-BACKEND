@@ -1,4 +1,4 @@
-export type IUser = {
+export type TUser = {
   id: string;
   password: string;
   needsPasswordChange: boolean;
