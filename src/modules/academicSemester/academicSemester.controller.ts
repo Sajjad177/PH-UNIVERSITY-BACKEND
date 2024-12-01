@@ -27,7 +27,21 @@ const getAllAcademicSemester = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleAcademicSemester = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result =
+    await academicSemesterService.getSingleAcademicSemesterFromDB(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Single Academic Semester get successfully',
+    data: result,
+  });
+});
+
 export const academicSemesterController = {
   createAcademicSemester,
   getAllAcademicSemester,
+  getSingleAcademicSemester,
 };
