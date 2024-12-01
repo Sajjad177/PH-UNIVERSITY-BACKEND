@@ -22,3 +22,8 @@ export type TAcademicSemester = {
   startMonth: TMonths;
   endMonth: TMonths;
 };
+
+// dynamic semester code type:
+export type TacademicSemesterNameCode = {
+  [key: string]: string;
+};
