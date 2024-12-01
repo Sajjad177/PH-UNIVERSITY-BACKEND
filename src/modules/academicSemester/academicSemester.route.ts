@@ -3,7 +3,6 @@ import { academicSemesterController } from './academicSemester.controller';
 import validateRequest from '../../middleware/validateRequest';
 import { academicSemesterValidation } from './academicSemesterValidation';
 
-
 const router = Router();
 
 router.post(
@@ -16,7 +15,18 @@ router.post(
 
 router.get('/', academicSemesterController.getAllAcademicSemester);
 
-router.get('/:id', academicSemesterController.getSingleAcademicSemester);
+router.get(
+  '/:semesterId',
+  academicSemesterController.getSingleAcademicSemester,
+);
 
+//! update academic semester there some problem for update:
+router.patch(
+  '/update/:semesterId',
+  validateRequest(
+    academicSemesterValidation.updateAcademicSemesterValidationSchema,
+  ),
+  academicSemesterController.updateAcademicSemester,
+);
 
 export const academicSemesterRoutes = router;
