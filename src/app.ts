@@ -21,6 +21,7 @@ app.use(cors(corsOptions));
 app.use('/api', router);
 
 
+
 app.get('/', (req: Request, res: Response) => {
   res.send('This api is working');
 });

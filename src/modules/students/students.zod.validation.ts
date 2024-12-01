@@ -65,7 +65,7 @@ const createStudentValidationSchema = z.object({
         message: 'Provided value is not a valid gender',
       }),
 
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       email: z
         .string()
         .trim()
