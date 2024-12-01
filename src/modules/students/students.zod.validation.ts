@@ -53,38 +53,44 @@ const localGuardianValidationZodSchema = z.object({
   address: z.string().trim().nonempty('Local guardian address is required'),
 });
 
-const studentValidationZodSchema = z.object({
-  id: z.string().nonempty('ID is required'),
-  password: z.string().trim().nonempty('Password is required'),
-  // .max(8, { message: 'Password cannot be more than 8 characters' })
-  // .min(6, { message: 'Password cannot be less than 6 characters' }),
-  name: userNameValidationZodSchema,
-  age: z.number().min(18, { message: 'Age must be at least 18' }),
-  gender: z.enum(['male', 'female'], {
-    message: 'Provided value is not a valid gender',
-  }),
+// Body use for validation of request body data
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    // user is ref from user model
+    password: z.string().trim().nonempty('Password is required'),
+    student: z.object({
+      name: userNameValidationZodSchema,
+      age: z.number().min(18, { message: 'Age must be at least 18' }),
+      gender: z.enum(['male', 'female'], {
+        message: 'Provided value is not a valid gender',
+      }),
 
-  dateOfBirth: z.string().optional(),
-  email: z
-    .string()
-    .trim()
-    .nonempty('Email is required')
-    .email({ message: '{VALUE} is not a valid email' }),
-  contactNo: z.string().trim().nonempty('Contact number is required'),
-  emergencyContactNo: z
-    .string()
-    .trim()
-    .nonempty('Emergency contact number is required'),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string().trim().nonempty('Present address is required'),
-  permanentAddress: z.string().trim().nonempty('Permanent address is required'),
-  guardian: guardianValidationZodSchema,
-  localGuardian: localGuardianValidationZodSchema,
-  profileImage: z.string().optional(),
-  isActive: z.enum(['active', 'inactive']).default('active'),
-  isDeleted: z.boolean().default(false),
+      dateOfBirth: z.string().optional(),
+      email: z
+        .string()
+        .trim()
+        .nonempty('Email is required')
+        .email({ message: '{VALUE} is not a valid email' }),
+      contactNo: z.string().trim().nonempty('Contact number is required'),
+      emergencyContactNo: z
+        .string()
+        .trim()
+        .nonempty('Emergency contact number is required'),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().trim().nonempty('Present address is required'),
+      permanentAddress: z
+        .string()
+        .trim()
+        .nonempty('Permanent address is required'),
+      guardian: guardianValidationZodSchema,
+      localGuardian: localGuardianValidationZodSchema,
+      profileImage: z.string().optional(),
+    }),
+  }),
 });
 
-export default studentValidationZodSchema;
+export const StudentValidationZodSchema = {
+  createStudentValidationSchema,
+};

@@ -1,10 +1,9 @@
-import { RequestHandler } from 'express';
 import { UserService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 
-const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
+const createStudent = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
 
   const result = await UserService.createStudentToDB(password, studentData);

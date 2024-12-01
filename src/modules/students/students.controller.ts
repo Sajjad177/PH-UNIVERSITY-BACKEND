@@ -1,11 +1,10 @@
-import { RequestHandler } from 'express';
 import { StudentService } from './students.service';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 
 // catchAsync we use to handle async error. and handling try catch block.
-const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+const getAllStudents = catchAsync(async (req, res) => {
   const result = await StudentService.getAllStudentsFromDB();
 
   sendResponse(res, {
@@ -16,7 +15,7 @@ const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-const getSingleStudent: RequestHandler = catchAsync(async (req, res, next) => {
+const getSingleStudent = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await StudentService.getSingleStudentFromDB(id);
 
@@ -28,7 +27,7 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-const deleteStudent: RequestHandler = catchAsync(async (req, res, next) => {
+const deleteStudent = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await StudentService.deleteStudentFromDB(id);
 
