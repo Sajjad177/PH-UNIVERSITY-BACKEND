@@ -65,7 +65,7 @@ const createStudentValidationSchema = z.object({
         message: 'Provided value is not a valid gender',
       }),
 
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z
         .string()
         .trim()
@@ -87,6 +87,7 @@ const createStudentValidationSchema = z.object({
       guardian: guardianValidationZodSchema,
       localGuardian: localGuardianValidationZodSchema,
       profileImage: z.string().optional(),
+      admissionSemester: z.string(),
     }),
   }),
 });
