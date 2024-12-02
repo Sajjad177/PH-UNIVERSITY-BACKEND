@@ -3,10 +3,6 @@ import { StudentController } from './students.controller';
 
 const router = Router();
 
-
-
-
-
 router.get('/get-students', StudentController.getAllStudents as RequestHandler);
 router.get(
   '/get-student/:id',
