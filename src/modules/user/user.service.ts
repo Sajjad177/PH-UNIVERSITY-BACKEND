@@ -1,4 +1,6 @@
+import { StatusCodes } from 'http-status-codes';
 import config from '../../config';
+import AppError from '../../error/AppError';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TStudent } from '../students/students.interface';
 import { Student } from '../students/students.schema';
@@ -22,7 +24,7 @@ const createStudentToDB = async (password: string, payload: TStudent) => {
     );
 
     if (!academicSemester) {
-      throw new Error('Academic semester not found');
+      throw new AppError('Academic semester not found', StatusCodes.NOT_FOUND);
     }
 
     // id :

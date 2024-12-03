@@ -1,5 +1,10 @@
 import cors from 'cors';
-import express, { Application, Request, RequestHandler, Response } from 'express';
+import express, {
+  Application,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import notFound from './middleware/notFound';
 import router from './routes';
@@ -19,8 +24,6 @@ app.use(cors(corsOptions));
 
 //routes
 app.use('/api', router);
-
-
 
 app.get('/', (req: Request, res: Response) => {
   res.send('This api is working');
