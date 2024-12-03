@@ -22,7 +22,7 @@ router.get(
 
 //! update academic semester there some problem for update:
 router.patch(
-  '/update/:semesterId',
+  '/:semesterId',
   validateRequest(
     academicSemesterValidation.updateAcademicSemesterValidationSchema,
   ),
