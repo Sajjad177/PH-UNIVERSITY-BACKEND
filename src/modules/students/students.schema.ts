@@ -184,7 +184,7 @@ studentSchema.pre('findOne', function (next) {
   next();
 });
 
-//TODO : create a custom static method-----------:
+//TODO : create a custom static method for checking user by id  exists or not:
 studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
