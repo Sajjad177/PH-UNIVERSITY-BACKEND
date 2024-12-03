@@ -11,7 +11,7 @@ const createStudent = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Student created successfully',
+    message: 'Student is created successfully',
     data: result,
   });
 });
