@@ -8,24 +8,39 @@ import { TStudent } from './students.interface';
 //* In academicDepartment refrence the academicFaculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
 
 const getAllStudentsFromDB = async (query: any) => {
+  // copy from query :
+  const queryObj = { ...query };
+
+  // for search term :
   // {email : { $regex : query.searchTerm, $options : "i"}}
   // {presentAddress : { $regex : query.searchTerm, $options : "i"}}
   // {name.firstName : { $regex : query.searchTerm, $options : "i"}}
 
-  // in this field cannot do hard code.We use dynamic field.
+  // in this field cannot do hard code Because there is so many field so we use dynamic field.
+
+  const studentSearchableFields = ['email', 'name.firstName', 'dateOfBirth'];
 
   let searchTerm = '';
-
   // dynamic search term :
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
 
-  const result = await Student.find({
-    $or: ['email', 'name.firstName', 'dateOfBirth']?.map((field) => ({
+  // filter query condition :
+  const excludeFields = ['searchTerm', 'sort', 'limit'];
+  // deleting excludeFields items from copy queryObj :
+  excludeFields.forEach((field) => delete queryObj[field]);
+
+  // search query :
+  const searchQuery = Student.find({
+    $or: studentSearchableFields?.map((field) => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  })
+  });
+
+  // filter query :
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -33,7 +48,29 @@ const getAllStudentsFromDB = async (query: any) => {
         path: 'academicFaculty',
       },
     });
-  return result;
+
+  // for ascending 1 and descending -1
+  // Ascending means smallest to largest, 0 to 9, and/or A to Z
+  // Descending means largest to smallest, 9 to 0, and/or Z to A.
+
+  // sorting :
+  let sort = '-createdAt';
+
+  if (query?.sort) {
+    sort = query?.sort as string;
+  }
+
+  const sortQuery = filterQuery.sort(sort);
+
+  // limiting :
+  let limit = 1;
+  if (query?.limit) {
+    limit = query?.limit 
+  }
+
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 
 const getSingleStudentFromDB = async (studentId: string) => {
