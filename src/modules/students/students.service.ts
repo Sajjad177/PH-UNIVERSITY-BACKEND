@@ -5,22 +5,35 @@ import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 import { TStudent } from './students.interface';
 
-//* academic department rafer the academic faculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
+//* In academicDepartment refrence the academicFaculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
 
-const getAllStudentsFromDB = async () => {
-  try {
-    const result = await Student.find()
-      .populate('admissionSemester')
-      .populate({
-        path: 'academicDepartment',
-        populate: {
-          path: 'academicFaculty',
-        },
-      });
-    return result;
-  } catch (error) {
-    console.log(error);
+const getAllStudentsFromDB = async (query: any) => {
+  // {email : { $regex : query.searchTerm, $options : "i"}}
+  // {presentAddress : { $regex : query.searchTerm, $options : "i"}}
+  // {name.firstName : { $regex : query.searchTerm, $options : "i"}}
+
+  // in this field cannot do hard code.We use dynamic field.
+
+  let searchTerm = '';
+
+  // dynamic search term :
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
   }
+
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'dateOfBirth']?.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
+  return result;
 };
 
 const getSingleStudentFromDB = async (studentId: string) => {

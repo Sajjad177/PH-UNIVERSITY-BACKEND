@@ -9,6 +9,7 @@ import { User } from './user.model';
 import { generateStudentId } from './user.utils';
 import mongoose from 'mongoose';
 
+
 const createStudentToDB = async (password: string, payload: TStudent) => {
   // create user object :
   const userData: Partial<TUser> = {};
@@ -62,10 +63,11 @@ const createStudentToDB = async (password: string, payload: TStudent) => {
     // rollback transaction if something went wrong :
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError('Failed to create student', StatusCodes.BAD_REQUEST);
+    throw new AppError(error as string, StatusCodes.BAD_REQUEST);
   }
 };
 
 export const UserService = {
   createStudentToDB,
 };
+

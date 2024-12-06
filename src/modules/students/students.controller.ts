@@ -5,7 +5,7 @@ import catchAsync from '../../utils/catchAsync';
 
 // catchAsync we use to handle async error. and handling try catch block.
 const getAllStudents = catchAsync(async (req, res) => {
-  const result = await StudentService.getAllStudentsFromDB();
+  const result = await StudentService.getAllStudentsFromDB(req.query);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
