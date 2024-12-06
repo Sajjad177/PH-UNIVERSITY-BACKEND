@@ -11,7 +11,9 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   { timestamps: true },
 );
 
-//TODO : pre middleware hook to check if the department name is already exist
+//TODO : pre middleware hook to check if the department name is already exist and handle duplicate name error [1] ->
+//TODO : this is 1st layer of duplicate name error handling -> 
+
 academicDepartmentSchema.pre('save', async function (next) {
   const isDepartmentExist = await AcademicDepartment.findOne({
     name: this.name,

@@ -4,6 +4,8 @@ import { TErrorSource } from '../modules/interface/globalInterface';
 import config from '../config';
 import handleZodError from '../error/handelZodError';
 import handleValidationError from '../error/handleValidationError';
+import handleCastError from '../error/handleCastError';
+import handleDuplicateError from '../error/handleDuplicateError';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   // setting default status code and message
@@ -17,14 +19,27 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     },
   ];
 
-  // checking it's zod error ->
+  // checking it's zod error and mongoose validation error ->
   if (error instanceof ZodError) {
     const simplifiedError = handleZodError(error);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
-  } else if (error?.name === 'ValidationError') {
+  } //TODO : Mongoose validation error ->
+  else if (error?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(error);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
+  } //TODO : when we get any data from database with error handling ->
+  else if (error?.name === 'CastError') {
+    const simplifiedError = handleCastError(error);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
+  } //TODO : Checking duplicate name error ->
+  else if (error?.code === 11000) {
+    const simplifiedError = handleDuplicateError(error);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
@@ -35,6 +50,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     success: false,
     message: message,
     errorSource,
+    error,
     stack: config.NODE_ENV === 'development' ? error.stack : null,
   });
 };
