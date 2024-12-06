@@ -7,7 +7,7 @@ import { TStudent } from './students.interface';
 
 //* In academicDepartment refrence the academicFaculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
 
-const getAllStudentsFromDB = async (query: any) => {
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // copy from query :
   const queryObj = { ...query };
 
@@ -27,9 +27,11 @@ const getAllStudentsFromDB = async (query: any) => {
   }
 
   // filter query condition :
-  const excludeFields = ['searchTerm', 'sort', 'limit'];
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
   // deleting excludeFields items from copy queryObj :
   excludeFields.forEach((field) => delete queryObj[field]);
+
+  console.log({ query }, { queryObj });
 
   // search query :
   const searchQuery = Student.find({
@@ -62,15 +64,37 @@ const getAllStudentsFromDB = async (query: any) => {
 
   const sortQuery = filterQuery.sort(sort);
 
-  // limiting :
+  // limiting and pagination : pagination rules : limit = 10, page = n -> skip = (n-1)*limit
+
+  let page = 1;
   let limit = 1;
+  let skip = 0;
+
+  // limit :
   if (query?.limit) {
-    limit = query?.limit 
+    limit = Number(query?.limit);
   }
 
-  const limitQuery = await sortQuery.limit(limit);
+  // page :
+  if (query?.page) {
+    page = Number(query?.page);
+    skip = (page - 1) * limit;
+  }
 
-  return limitQuery;
+  const paginationQuary = sortQuery.skip(skip).limit(limit);
+  const limitQuery = paginationQuary.limit(limit);
+
+  // field limiting :
+  let fields = '-__v';
+
+  if (query?.fields) {
+    fields = (query?.fields as string).split(',').join(' ');
+    console.log({ fields });
+  }
+
+  const fieldQuery = await limitQuery.select(fields);
+
+  return fieldQuery;
 };
 
 const getSingleStudentFromDB = async (studentId: string) => {

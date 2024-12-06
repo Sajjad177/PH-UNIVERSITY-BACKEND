@@ -167,8 +167,9 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 );
 
 //! virtual type this is vary important ----------- ->
+// virtual type is used to add a virtual field to the schema which is not stored in the database but is calculated on the fly
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 // Query Middleware :
