@@ -6,11 +6,12 @@ import handleZodError from '../error/handelZodError';
 import handleValidationError from '../error/handleValidationError';
 import handleCastError from '../error/handleCastError';
 import handleDuplicateError from '../error/handleDuplicateError';
+import AppError from '../error/AppError';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   // setting default status code and message
-  let statusCode = error.statusCode || 500;
-  let message = error.message || 'Something went wrong';
+  let statusCode = 500;
+  let message = 'Something went wrong';
 
   let errorSource: TErrorSource = [
     {
@@ -43,6 +44,25 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
+  } //TODO : AppError custom error handling ->
+  else if (error instanceof AppError) {
+    statusCode = error?.statusCode;
+    message = error?.message;
+    errorSource = [
+      {
+        path: '',
+        message: error?.message,
+      },
+    ];
+  } //TODO : unknown error handling ->
+  else if (error instanceof Error) {
+    message = error?.message;
+    errorSource = [
+      {
+        path: '',
+        message: error?.message,
+      },
+    ];
   }
 
   // ultimate return

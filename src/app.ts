@@ -25,9 +25,18 @@ app.use(cors(corsOptions));
 //routes
 app.use('/api', router);
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('This api is working');
-});
+const test = async (req: Request, res: Response) => {
+  const a = 1;
+  const b = 2;
+  const c = a + b;
+  res.send(c);
+};
+
+app.get('/', test);
+
+// app.get('/', (req: Request, res: Response) => {
+//   res.send('This api is working');
+// });
 
 // global error handler :
 app.use(globalErrorHandler as unknown as RequestHandler);
