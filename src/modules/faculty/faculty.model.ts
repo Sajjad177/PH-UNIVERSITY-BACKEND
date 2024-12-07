@@ -50,7 +50,7 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
       },
       required: [true, 'Gender is required'],
     },
-    dateOfBirth: { type: Date },
+    dateOfBirth: { type: String },
     email: {
       type: String,
       required: [true, 'Email is required'],
