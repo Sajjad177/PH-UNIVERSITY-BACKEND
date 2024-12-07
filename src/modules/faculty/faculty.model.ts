@@ -2,8 +2,6 @@ import { Schema, model } from 'mongoose';
 import { FacultyModel, TFaculty, TUserName } from './faculty.interface';
 import { BloodGroup, Gender } from './faculty.constant';
 
-
-
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -81,8 +79,8 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
     profileImg: { type: String },
     academicDepartment: {
       type: Schema.Types.ObjectId,
-      required: [true, 'User id is required'],
-      ref: 'User',
+      required: [true, 'Academic department is required'],
+      ref: 'AcademicDepartment',
     },
     isDeleted: {
       type: Boolean,
@@ -113,11 +111,13 @@ facultySchema.pre('find', function (next) {
   next();
 });
 
+// filter out deleted documents using findOne using query middleware
 facultySchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
+// filter out deleted documents using aggregate using query middleware
 facultySchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
