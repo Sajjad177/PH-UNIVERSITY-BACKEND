@@ -1,7 +1,11 @@
+import mongoose from 'mongoose';
 import QueryBuilder from '../builder/Querybuilder';
 import { FacultySearchableFields } from './faculty.constant';
 import { TFaculty } from './faculty.interface';
 import { Faculty } from './faculty.model';
+import AppError from '../../error/AppError';
+import { StatusCodes } from 'http-status-codes';
+import { User } from '../user/user.model';
 
 const createFacultyIntoDB = async (payload: TFaculty) => {
   const result = await Faculty.create(payload);
@@ -10,9 +14,7 @@ const createFacultyIntoDB = async (payload: TFaculty) => {
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
-    Faculty.find()
-      .populate('user')
-      .populate('academicDepartment'),
+    Faculty.find().populate('user').populate('academicDepartment'),
     query,
   )
     .search(FacultySearchableFields)
@@ -58,9 +60,53 @@ const updateFacultyIntoDB = async (
   return result;
 };
 
+const deleteFacultyFromDB = async (facultyId: string) => {
+  console.log({ facultyId });
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const deletedFaculty = await Faculty.findByIdAndUpdate(
+      facultyId,
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedFaculty) {
+      throw new AppError('Failed to delete faculty', StatusCodes.BAD_REQUEST);
+    }
+
+    const userId = deletedFaculty.user;
+
+    const deletedUser = await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedUser) {
+      throw new AppError('Failed to delete user', StatusCodes.BAD_REQUEST);
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedFaculty;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(
+      'Failed to delete faculty and associated data',
+      StatusCodes.BAD_REQUEST,
+    );
+  }
+};
+
 export const facultyServices = {
   createFacultyIntoDB,
   getAllFacultiesFromDB,
   getSingleFacultyFromDB,
   updateFacultyIntoDB,
+  deleteFacultyFromDB,
 };

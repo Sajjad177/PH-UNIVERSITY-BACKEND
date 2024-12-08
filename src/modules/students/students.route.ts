@@ -7,15 +7,15 @@ const router = Router();
 
 router.get('/', StudentController.getAllStudents as RequestHandler);
 
-router.get('/:studentId', StudentController.getSingleStudent as RequestHandler);
+router.get('/:id', StudentController.getSingleStudent as RequestHandler);
 
 router.delete(
-  '/:generatedId',
+  '/:id',
   StudentController.deleteStudent as RequestHandler,
 );
 
 router.patch(
-  '/:studentId',
+  '/:id',
   validateRequest(StudentValidationZodSchema.updateStudentValidationZodSchema),
   StudentController.updateStudent as RequestHandler,
 );
