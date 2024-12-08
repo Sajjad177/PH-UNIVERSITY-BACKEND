@@ -177,6 +177,7 @@ const updateStudentIntoDB = async (
   studentId: string,
   payload: Partial<TStudent>,
 ) => {
+  // there some data we want to update
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
   /*  -------- Nono premitive data type update --------

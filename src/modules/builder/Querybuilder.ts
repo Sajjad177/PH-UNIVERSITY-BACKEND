@@ -13,7 +13,8 @@ class QueryBuilder<T> {
 
   //TODO-1 : search ------ :
   search(searchableFields: string[]) {
-    const searchTerm = this.query?.search;
+    const searchTerm = this.query?.searchTerm;
+
     if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields?.map(
@@ -24,7 +25,6 @@ class QueryBuilder<T> {
         ),
       });
     }
-
     return this;
   }
   //TODO-2 : filter --------- :
