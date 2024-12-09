@@ -1,10 +1,11 @@
 import { model, Schema } from 'mongoose';
 import { TCourse, TPreRequisiteCourse } from './course.interface';
+import { optional } from 'zod';
 
 const preRequisiteCourseSchema = new Schema<TPreRequisiteCourse>({
   course: {
     type: Schema.Types.ObjectId,
-    // ref: 'Course',
+    ref: 'Course',
   },
   isDeleted: {
     type: Boolean,
