@@ -19,4 +19,17 @@ router.patch(
   CourseController.updateCourse,
 );
 
+// put use if have any data then update and if not have any data then create a new one
+router.put(
+  '/:courseId/assign-faculties',
+  validateRequest(CourseValidation.FacultiesWithCourseValidationSchema),
+  CourseController.assignFacultiesWithCourse,
+);
+
+router.delete(
+  '/:courseId/remove-faculties',
+  validateRequest(CourseValidation.FacultiesWithCourseValidationSchema),
+  CourseController.removeFacultiesFromCourse,
+);
+
 export const CourseRoutes = router;

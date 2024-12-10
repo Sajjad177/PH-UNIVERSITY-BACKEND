@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../error/AppError';
 import QueryBuilder from '../builder/Querybuilder';
 import { courseSearchableFields } from './course.constant';
-import { TCourse } from './course.interface';
-import { Course } from './course.model';
+import { TCourse, TCourseFaculties } from './course.interface';
+import { Course, CourseFaculties } from './course.model';
 import mongoose from 'mongoose';
 
 const createCourseIntoDB = async (payload: TCourse) => {
@@ -149,10 +149,44 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   }
 };
 
+const assignFacultiesWithCourseIntoDB = async (
+  courseId: string,
+  payload: Partial<TCourseFaculties>,
+) => {
+  const result = await CourseFaculties.findByIdAndUpdate(
+    courseId,
+    {
+      course: courseId,
+      $addToSet: { faculties: { $each: payload } },
+    },
+    {
+      // it's [ upsert ] means if the document is not found then create a new one and update if it is found
+      upsert: true,
+      new: true,
+      runValidators: true,
+    },
+  );
+  return result;
+};
+
+const removeFacultiesFromCourseFromDB = async (
+  courseId: string,
+  payload: Partial<TCourseFaculties>,
+) => {
+  const result = await CourseFaculties.findByIdAndUpdate(
+    courseId,
+    { $pull: { faculties: { $in: payload } } },
+    { new: true, runValidators: true },
+  );
+  return result;
+};
+
 export const CourseService = {
   createCourseIntoDB,
   getAllCoursesFromDB,
   getSingleCourseFromDB,
   deleteCourseFromDB,
   updateCourseIntoDB,
+  assignFacultiesWithCourseIntoDB,
+  removeFacultiesFromCourseFromDB,
 };
