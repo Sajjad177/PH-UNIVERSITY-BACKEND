@@ -39,6 +39,10 @@ const courseSchema = new Schema<TCourse>({
     type: [preRequisiteCourseSchema],
     // ref: 'Course',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export const Course = model<TCourse>('Course', courseSchema);
