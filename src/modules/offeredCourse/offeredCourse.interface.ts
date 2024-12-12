@@ -11,7 +11,7 @@ export type Days =
 
 export type TOfferedCourse = {
   semesterRegistration: Types.ObjectId;
-  academicSemester: Types.ObjectId;
+  academicSemester?: Types.ObjectId;
   academicFaculty: Types.ObjectId;
   academicDepartment: Types.ObjectId;
   course: Types.ObjectId;
