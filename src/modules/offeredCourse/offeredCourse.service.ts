@@ -122,6 +122,68 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   return result;
 };
 
+const updateOfferedCourseIntoDB = async (
+  id: string,
+  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
+) => {
+  const { faculty, days, startTime, endTime } = payload;
+
+  // checking if the offeredCourse is exist :
+  const isOfferedCourseExist = await OfferedCourse.findById(id);
+
+  if (!isOfferedCourseExist) {
+    throw new AppError('Offered Course not found', StatusCodes.NOT_FOUND);
+  }
+
+  const isFacultyExist = await Faculty.findById(faculty);
+
+  if (!isFacultyExist) {
+    throw new AppError('Faculty not found', StatusCodes.NOT_FOUND);
+  }
+
+  const semesterRegistration = isOfferedCourseExist.semesterRegistration;
+
+  // wen semesterRegistration is UPCOMING then we can update the offeredCourse :
+  const isSemesterRegistrationUpcoming =
+    await SemesterRegistration.findById(semesterRegistration);
+
+  if (isSemesterRegistrationUpcoming?.status !== 'UPCOMING') {
+    throw new AppError(
+      `You can not update this offered course as ${isSemesterRegistrationUpcoming?.status} `,
+      StatusCodes.BAD_REQUEST,
+    );
+  }
+
+  // get the schedule:
+  const assignedSchedule = await OfferedCourse.find({
+    semesterRegistration,
+    faculty,
+    days: { $in: days }, // checking if the days is in the days array
+  }).select('days startTime endTime');
+
+  // checking if the schedule is already exist :
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  // checking if the schedule is already exist :
+  if (hasTimeConflict(assignedSchedule, newSchedule)) {
+    throw new AppError(
+      `Faculty is not available at this time choose another time or day`,
+      StatusCodes.BAD_REQUEST,
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
 export const OfferedCourseService = {
   createOfferedCourseIntoDB,
+  updateOfferedCourseIntoDB,
 };
