@@ -7,6 +7,7 @@ import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
+import { hasTimeConflict } from './offeredCourse.utils';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
@@ -106,30 +107,19 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     endTime,
   };
 
-  //* 1 teacher can't have two class at the same day but he can have two class at the different day and time ------------------ ->
+  // checking if the schedule is already exist :
+  if (hasTimeConflict(assignedSchedule, newSchedule)) {
+    throw new AppError(
+      `Faculty is not available at this time choose another time or day`,
+      StatusCodes.BAD_REQUEST,
+    );
+  }
 
-  assignedSchedule.forEach((schedule) => {
-    const existingStartTime = new Date(`1970-01-01T${schedule.startTime}:00`);
-    const existingEndTime = new Date(`1970-01-01T${schedule.endTime}:00`);
-
-    const newStartTime = new Date(`1970-01-01T${newSchedule.startTime}:00`);
-    const newEndTime = new Date(`1970-01-01T${newSchedule.endTime}:00`);
-
-    // if newStartime is smaller then existingEndTime and newEndTime is greater then existingStartTime then throw an error :
-    if (newStartTime < existingEndTime && newEndTime > existingStartTime) {
-      throw new AppError(
-        `Faculty is not available at this time choose another time or day`,
-        StatusCodes.BAD_REQUEST,
-      );
-    }
+  const result = await OfferedCourse.create({
+    ...payload,
+    academicSemester,
   });
-
-  // const result = await OfferedCourse.create({
-  //   ...payload,
-  //   academicSemester,
-  // });
-  // return result;
-  return 'ok';
+  return result;
 };
 
 export const OfferedCourseService = {
