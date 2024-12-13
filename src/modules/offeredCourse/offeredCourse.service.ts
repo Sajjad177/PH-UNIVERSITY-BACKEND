@@ -193,9 +193,38 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
   return result;
 };
 
+const deleteOfferedCourseFromDB = async (id: string) => {
+  // stape 1 : check if the offeredCourse is exist :
+  const isOfferedCourseExist = await OfferedCourse.findById(id);
+
+  if (!isOfferedCourseExist) {
+    throw new AppError('Offered Course not found', StatusCodes.NOT_FOUND);
+  }
+
+  const semesterRegistration = isOfferedCourseExist.semesterRegistration;
+
+  // stape 2 : check if the semesterRegistration is UPCOMING :
+  const isSemesterRegistrationUpcoming =
+    await SemesterRegistration.findById(semesterRegistration).select(
+      'status',
+    );
+
+  if (isSemesterRegistrationUpcoming?.status !== 'UPCOMING') {
+    throw new AppError(
+      `You can not delete this offered course as ${isSemesterRegistrationUpcoming?.status} `,
+      StatusCodes.BAD_REQUEST,
+    );
+  }
+
+
+  const result = await OfferedCourse.findByIdAndDelete(id);
+  return result;
+};
+
 export const OfferedCourseService = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
   getSingleOfferedCourseFromDB,
+  deleteOfferedCourseFromDB,
 };
