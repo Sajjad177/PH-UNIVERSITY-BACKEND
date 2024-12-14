@@ -1,41 +1,32 @@
-// import { StatusCodes } from 'http-status-codes';
-// import AppError from '../../error/AppError';
-// import { User } from '../user/user.model';
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../../error/AppError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
-// import bcrypt from 'bcrypt';
 
 const loginUserInDB = async (payload: TLoginUser) => {
   // checking if ther user exist or not :
-  if (!(await User.isUserExistsByCustomID(payload.id))) {
+
+  const isUserExist = await User.isUserExistsByCustomID(payload.id);
+  if (!isUserExist) {
     throw new AppError('User is not found', StatusCodes.NOT_FOUND);
   }
 
-  // // checking user is deleted or not :
-  // const isUserDeleted = isUserExist?.isDeleted;
+  // checking user is deleted or not :
+  const isDeleted = isUserExist?.isDeleted;
 
-  // if (isUserDeleted) {
-  //   throw new AppError('User is deleted', StatusCodes.BAD_REQUEST);
-  // }
+  if (isDeleted) {
+    throw new AppError('User is deleted', StatusCodes.BAD_REQUEST);
+  }
 
-  // // checking user is blocked or not :
-  // const isUserStatus = isUserExist?.status;
+  // checking user is blocked or not :
+  if (isUserExist?.status === 'blocked') {
+    throw new AppError('User is blocked', StatusCodes.BAD_REQUEST);
+  }
 
-  // if (isUserStatus === 'blocked') {
-  //   throw new AppError('User is blocked', StatusCodes.BAD_REQUEST);
-  // }
-
-  // // checking password match or not :
-  // const isPasswordMatch = await bcrypt.compare(
-  //   payload.password,
-  //   isUserExist.password,
-  // );
-
-  // if (!isPasswordMatch) {
-  //   throw new AppError('Password is not match', StatusCodes.BAD_REQUEST);
-  // }
+  // checking password match or not :
+  if (!(await User.isPasswordMatch(payload.password, isUserExist.password))) {
+    throw new AppError('Password is not match', StatusCodes.BAD_REQUEST);
+  }
 
   // send access token  and refresh token :
 

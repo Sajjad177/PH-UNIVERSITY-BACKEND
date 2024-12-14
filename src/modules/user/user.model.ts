@@ -39,9 +39,27 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-// cteating static method function :
+// cteating static method function : id checking method
 userSchema.statics.isUserExistsByCustomID = async function (id: string) {
   return await User.findOne({ id });
 };
+
+// checking user is deleted or not :
+userSchema.statics.isUserDeletedChecking = async function ( isDeleted: boolean) {  
+  return await User.findOne({ isDeleted });
+};
+
+// checking user is blocked or not :
+userSchema.statics.isUserStatusChecking = async function ( status: string) {
+  return await User.findOne({ status });
+};
+
+
+// password match method :
+userSchema.statics.isPasswordMatch = async function (password: string, hashedPassword: string) {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
+
 
 export const User = model<TUser, UserModel>('User', userSchema);
