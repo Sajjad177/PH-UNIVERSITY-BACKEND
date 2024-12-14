@@ -1,9 +1,9 @@
 import { model, Schema } from 'mongoose';
-import { TUser } from './user.interface';
 import config from '../../config';
 import bcrypt from 'bcrypt';
+import { TUser, UserModel } from './user.interface';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -24,7 +24,6 @@ const userSchema = new Schema<TUser>(
 );
 
 //TODO : createing pre save hook or middleware :
-
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
@@ -40,4 +39,9 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-export const User = model<TUser>('User', userSchema);
+// cteating static method function :
+userSchema.statics.isUserExistsByCustomID = async function (id: string) {
+  return await User.findOne({ id });
+};
+
+export const User = model<TUser, UserModel>('User', userSchema);
