@@ -8,6 +8,8 @@ import { USER_ROLE } from '../user/user.constant';
 
 const router = express.Router();
 
+// login and refresh token route naver use auth middleware because they are not protected route.
+
 router.post(
   '/login',
   validateRequest(AuthValidation.loginValidationSchema),
@@ -16,13 +18,20 @@ router.post(
 
 router.post(
   '/change-password',
-  auth( //every user can change password
+  auth(
+    //every user can change password
     USER_ROLE.ADMIN as TUserRole,
     USER_ROLE.FACULTY as TUserRole,
     USER_ROLE.STUDENT as TUserRole,
   ),
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthController.changePassword,
+);
+
+router.post(
+  '/refresh-token',
+  validateRequest(AuthValidation.refreshTokenValidationSchema),
+  AuthController.refreshToken,
 );
 
 export const AuthRoutes = router;

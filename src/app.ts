@@ -8,10 +8,13 @@ import express, {
 import globalErrorHandler from './middleware/globalErrorHandler';
 import notFound from './middleware/notFound';
 import router from './routes';
+import cookieParser from 'cookie-parser';
+
 const app: Application = express();
 
 // parser -->
 app.use(express.json());
+app.use(cookieParser());
 
 //corse setup :
 const corsOptions = {

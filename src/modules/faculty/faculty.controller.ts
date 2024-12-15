@@ -6,7 +6,6 @@ import { facultyServices } from './faculty.services';
 //! we are crating create faculty in user controller and we are not creating create faculty in faculty controller. We handle student, admin, faculty in user controller.
 
 const getAllFaculties = catchAsync(async (req, res) => {
-  console.log('test -> ', req.user);
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {
