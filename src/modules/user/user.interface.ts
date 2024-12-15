@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { USER_ROLE } from './user.constant';
 
 export interface TUser {
   id: string;
@@ -17,3 +18,6 @@ export interface UserModel extends Model<TUser> {
   isUserStatusChecking(status: 'blocked'): Promise<TUser>;
   isPasswordMatch(password: string, hashedPassword: string): Promise<boolean>;
 }
+
+// type of user role
+export type TUserRole = keyof typeof USER_ROLE;

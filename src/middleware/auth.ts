@@ -4,8 +4,10 @@ import catchAsync from '../utils/catchAsync';
 import config from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { TUserRole } from '../modules/user/user.interface';
 
-const auth = () => {
+//TODO: auth authentication middleware :
+const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
@@ -22,6 +24,16 @@ const auth = () => {
 
     // checking decoded is valid or not:
     if (!decoded) {
+      throw new AppError(
+        'You are not authorized for access',
+        StatusCodes.UNAUTHORIZED,
+      );
+    }
+
+    const { role } = decoded as JwtPayload;
+
+    //TODO : authorization : role checking :
+    if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError('You are not authorized', StatusCodes.UNAUTHORIZED);
     }
 
