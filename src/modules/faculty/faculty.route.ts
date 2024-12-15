@@ -2,6 +2,7 @@ import { Router } from "express";
 import { facultyController } from "./faculty.controller";
 import validateRequest from "../../middleware/validateRequest";
 import { facultyValidations } from "./faculty.validation";
+import auth from "../../middleware/auth";
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.post(
   facultyController.createFaculty,
 );
 
-router.get('/', facultyController.getAllFaculties);
+router.get('/', auth(), facultyController.getAllFaculties);
 
 router.get('/:facultyId', facultyController.getSingleFaculty);
 

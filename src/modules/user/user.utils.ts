@@ -94,15 +94,20 @@ export const findLastAdminId = async () => {
 
 // generate admin id :
 export const generateAdminId = async () => {
+  // By default id : 0000
   let currentId = (0).toString();
 
+  // check last admin id :
   const lastAdminId = await findLastAdminId();
 
+  // check last admin id :
   if (lastAdminId) {
     currentId = lastAdminId;
   }
 
+  // increment id :
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  // A-0001 is the last admin id :
   incrementId = `A-${incrementId}`;
 
   return incrementId;
