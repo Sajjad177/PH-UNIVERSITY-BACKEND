@@ -5,6 +5,7 @@ import config from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { TUserRole } from '../modules/user/user.interface';
+import { User } from '../modules/user/user.model';
 
 //TODO: auth authentication middleware :
 const auth = (...requiredRoles: TUserRole[]) => {
@@ -21,16 +22,35 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     // checking token is valid or not:
     const decoded = jwt.verify(token, config.jwt_access_secret as string);
+    // iat : token issued at time :
+    const { role, userId, iat } = decoded as JwtPayload;
 
-    // checking decoded is valid or not:
-    if (!decoded) {
-      throw new AppError(
-        'You are not authorized for access',
-        StatusCodes.UNAUTHORIZED,
-      );
+    // checking if ther user exist or not :
+    const user = await User.isUserExistsByCustomID(userId);
+
+    if (!user) {
+      throw new AppError('User is not found', StatusCodes.NOT_FOUND);
     }
 
-    const { role } = decoded as JwtPayload;
+    // checking user is deleted or not :
+    const isDeleted = user?.isDeleted;
+
+    if (isDeleted) {
+      throw new AppError('User is deleted', StatusCodes.BAD_REQUEST);
+    }
+
+    // checking user is blocked or not :
+    if (user?.status === 'blocked') {
+      throw new AppError('User is blocked', StatusCodes.BAD_REQUEST);
+    }
+
+    // comparing jwt issued time and password change time and throw error if token is invalid :
+    if (
+      user.passwordChangeAt &&
+      User.isJwtIssuedBeforePasswordChange(user.passwordChangeAt, iat as number)
+    ) {
+      throw new AppError('Token is invalid', StatusCodes.UNAUTHORIZED);
+    }
 
     //TODO : authorization : role checking :
     if (requiredRoles && !requiredRoles.includes(role)) {

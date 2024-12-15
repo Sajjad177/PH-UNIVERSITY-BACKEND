@@ -7,6 +7,7 @@ const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
+    passwordChangeAt: { type: Date },
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
@@ -60,6 +61,21 @@ userSchema.statics.isPasswordMatch = async function (
   hashedPassword: string,
 ) {
   return await bcrypt.compare(password, hashedPassword);
+};
+
+// function to check jwt issued time is before password change time : [if any one hacked jwt token then we checking iat and passwordChangeAt time]
+// iat : token issued at time :
+// passwordChangeAt : password change at time :
+// if iat is bigger than passwordChangeAt time then it's mean that the jwt token is hacked then before token is invalid :
+
+userSchema.statics.isJwtIssuedBeforePasswordChange = function (
+  passwordChangeTimeStamp: Date,
+  jwtIssuedTimeStamp: number,
+) {
+  const passwordChangeTime = new Date(passwordChangeTimeStamp).getTime() / 1000;
+
+  // passwordChangeTime is greater than jwtIssuedTimeStamp 
+  return passwordChangeTime > jwtIssuedTimeStamp;
 };
 
 export const User = model<TUser, UserModel>('User', userSchema);

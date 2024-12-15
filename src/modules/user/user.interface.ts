@@ -4,6 +4,7 @@ import { USER_ROLE } from './user.constant';
 export interface TUser {
   id: string;
   password: string;
+  passwordChangeAt?: Date;
   needsPasswordChange: boolean;
   role: 'admin' | 'student' | 'faculty';
   isDeleted: boolean;
@@ -17,6 +18,11 @@ export interface UserModel extends Model<TUser> {
   isUserDeletedChecking(isDeleted: boolean): Promise<TUser>;
   isUserStatusChecking(status: 'blocked'): Promise<TUser>;
   isPasswordMatch(password: string, hashedPassword: string): Promise<boolean>;
+  // checking jwt issued time is before password change time :[if any one hacked the jwt token then he can't access the user data]
+  isJwtIssuedBeforePasswordChange(
+    passwordChangeTimeStamp: Date,
+    jwtIssuedTimeStamp: number,
+  ): boolean;
 }
 
 // type of user role
