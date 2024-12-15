@@ -7,11 +7,6 @@ import AppError from '../../error/AppError';
 import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 
-const createFacultyIntoDB = async (payload: TFaculty) => {
-  const result = await Faculty.create(payload);
-  return result;
-};
-
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
     Faculty.find().populate('user').populate('academicDepartment'),
@@ -104,7 +99,7 @@ const deleteFacultyFromDB = async (facultyId: string) => {
 };
 
 export const facultyServices = {
-  createFacultyIntoDB,
+  // createFacultyIntoDB,
   getAllFacultiesFromDB,
   getSingleFacultyFromDB,
   updateFacultyIntoDB,

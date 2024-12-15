@@ -3,20 +3,10 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { facultyServices } from './faculty.services';
 
-const createFaculty = catchAsync(async (req, res) => {
-  const { faculty: facultyData } = req.body;
-  const result = await facultyServices.createFacultyIntoDB(facultyData);
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Faculty created successfully',
-    data: result,
-  });
-});
+//! we are crating create faculty in user controller and we are not creating create faculty in faculty controller. We handle student, admin, faculty in user controller.
 
 const getAllFaculties = catchAsync(async (req, res) => {
-  console.log('test -> ',req.user);
+  console.log('test -> ', req.user);
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {
@@ -68,7 +58,7 @@ const deleteFaculty = catchAsync(async (req, res) => {
 });
 
 export const facultyController = {
-  createFaculty,
+  // createFaculty,
   getAllFaculties,
   getSingleFaculty,
   updateFaculty,
