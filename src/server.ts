@@ -18,23 +18,22 @@ async function main() {
 
 main();
 
-//TODO : handle unhandled promise rejection or error for asyncronous code
+//This code is handling two types of errors in a Node.js application: unhandled promise rejections and uncaught exceptions.
+
+//Step 1: Handling Unhandled Promise Rejections ->
 process.on('unhandledRejection', () => {
-  console.log('unhandledRejection 😑 is surrouned');
+  console.log('unhandledRejection 😑 is surrouned ------ -> ');
   if (server) {
     server.close(() => {
       process.exit(1);
     });
   }
-  // when server is not running
+  //process.exit(1);: If the server is not running, it directly exits the process with exit code 1.
   process.exit(1);
 });
 
-//TODO : handle uncaughtException for syncronous code ->
+//Step 2: Handling Uncaught Exceptions ->
 process.on('uncaughtException', () => {
   console.log('uncaughtException 😑 is surrouned ------ -> ');
   process.exit(1);
 });
-
-// checking uncaughtException error ->
-// console.log(x);
