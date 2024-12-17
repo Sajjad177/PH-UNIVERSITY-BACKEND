@@ -44,8 +44,7 @@ export type TStudent = {
   isDeleted: boolean;
 };
 
-//TODO : create a custom instance method-----------:
-
+//TODO : create a custom instance method for find user by id:
 // export type StudentMethods = {
 //   isUserExists(id: string): Promise<TStudent | null>;
 // };

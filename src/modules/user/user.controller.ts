@@ -16,8 +16,6 @@ const createStudent = catchAsync(async (req, res) => {
   });
 });
 
-
-
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
   const result = await UserService.createFacultyToDB(password, facultyData);
@@ -29,10 +27,6 @@ const createFaculty = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
-
-
-
 
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
