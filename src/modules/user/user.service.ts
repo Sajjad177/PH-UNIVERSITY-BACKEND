@@ -19,13 +19,14 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Faculty } from '../faculty/faculty.model';
 
 const createStudentToDB = async (password: string, payload: TStudent) => {
-  // create user object :
+  // create user object and save it in user collection :
   const userData: Partial<TUser> = {};
   // password  is given by user or not :
   userData.password = password || (config.default_password as string);
 
-  // role :
+  // role and email :
   userData.role = 'student';
+  userData.email = payload.email;
 
   // find academic semester info :
   const academicSemester = await AcademicSemester.findById(
@@ -76,14 +77,15 @@ const createStudentToDB = async (password: string, payload: TStudent) => {
 };
 
 const createFacultyToDB = async (password: string, payload: TFaculty) => {
-  // create user object :
+  // create user object and aslo save it in user collection :
   const userData: Partial<TUser> = {};
 
   // check password is given or not :
   userData.password = password || (config.default_password as string);
 
-  // set role :
+  // set role and email :
   userData.role = 'faculty';
+  userData.email = payload.email;
 
   // find academic department info :
   const academicDepartment = await AcademicDepartment.findById(
@@ -133,14 +135,15 @@ const createFacultyToDB = async (password: string, payload: TFaculty) => {
 };
 
 const createAdminIntoDB = async (password: string, payload: TAdmin) => {
-  // create user object :
+  // create user object and also save it in user collection :
   const userData: Partial<TUser> = {};
 
   // check password is given or not :
   userData.password = password || (config.default_password as string);
 
-  // set role :
+  // set role and email :
   userData.role = 'admin';
+  userData.email = payload.email;
 
   const session = await mongoose.startSession();
 

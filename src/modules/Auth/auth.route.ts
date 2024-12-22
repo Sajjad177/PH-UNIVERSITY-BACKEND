@@ -20,7 +20,7 @@ router.post(
   '/change-password',
   auth(
     //every user can change password
-    USER_ROLE.ADMIN as TUserRole,
+    USER_ROLE.ADMIN as TUserRole, 
     USER_ROLE.FACULTY as TUserRole,
     USER_ROLE.STUDENT as TUserRole,
   ),
@@ -32,6 +32,12 @@ router.post(
   '/refresh-token',
   validateRequest(AuthValidation.refreshTokenValidationSchema),
   AuthController.refreshToken,
+);
+
+router.post(
+  '/forget-password',
+  validateRequest(AuthValidation.forgetPasswordValidationSchema),
+  AuthController.forgetPassword,
 );
 
 export const AuthRoutes = router;

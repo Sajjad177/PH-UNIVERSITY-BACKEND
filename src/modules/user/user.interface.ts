@@ -4,6 +4,7 @@ import { USER_ROLE } from './user.constant';
 // user interface for user model 
 export interface TUser {
   id: string;
+  email: string;
   password: string;
   passwordChangeAt?: Date;
   needsPasswordChange: boolean;

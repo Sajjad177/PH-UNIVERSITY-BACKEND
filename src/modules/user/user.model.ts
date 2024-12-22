@@ -6,6 +6,7 @@ import { TUser, UserModel } from './user.interface';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
     passwordChangeAt: { type: Date },
     needsPasswordChange: { type: Boolean, default: true },
@@ -50,7 +51,7 @@ userSchema.statics.isUserDeletedChecking = async function (isDeleted: boolean) {
   return await User.findOne({ isDeleted });
 };
 
-// checking user is blocked or not : 
+// checking user is blocked or not :
 userSchema.statics.isUserStatusChecking = async function (status: string) {
   return await User.findOne({ status });
 };
@@ -74,7 +75,7 @@ userSchema.statics.isJwtIssuedBeforePasswordChange = function (
 ) {
   const passwordChangeTime = new Date(passwordChangeTimeStamp).getTime() / 1000;
 
-  // passwordChangeTime is greater than jwtIssuedTimeStamp 
+  // passwordChangeTime is greater than jwtIssuedTimeStamp
   return passwordChangeTime > jwtIssuedTimeStamp;
 };
 

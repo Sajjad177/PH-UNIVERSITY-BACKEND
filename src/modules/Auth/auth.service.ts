@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 import { createToken } from './auth.utils';
+import { sendEmail } from '../../utils/sendEmail';
 
 const loginUserInDB = async (payload: TLoginUser) => {
   // checking if ther user exist or not :
@@ -167,8 +168,49 @@ const refreshTokenInDB = async (token: string) => {
   return { accessToken };
 };
 
+const forgetPasswordInDB = async (userId: string) => {
+  // checking if ther user exist or not :
+  const user = await User.isUserExistsByCustomID(userId);
+
+  if (!user) {
+    throw new AppError('User is not found', StatusCodes.NOT_FOUND);
+  }
+
+  // checking user is deleted or not :
+  const isDeleted = user?.isDeleted;
+
+  if (isDeleted) {
+    throw new AppError('User is deleted', StatusCodes.BAD_REQUEST);
+  }
+
+  // checking user is blocked or not :
+  if (user?.status === 'blocked') {
+    throw new AppError('User is blocked', StatusCodes.BAD_REQUEST);
+  }
+
+  // create token and send to user :
+  const JwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  // create access token :
+  const resetToken = createToken(
+    JwtPayload,
+    config.jwt_access_expires_in as string,
+    '10m',
+  );
+
+  // send to email user with reset link :
+  const resetUILink = `${config.reset_password_ui_link}?id=${user.id}&token=${resetToken}`;
+
+  // dynamic send email and reset link :
+  sendEmail(user.email, `<a href="${resetUILink}">Reset Password</a>`);
+};
+
 export const AuthService = {
   loginUserInDB,
   changePasswordInDB,
   refreshTokenInDB,
+  forgetPasswordInDB,
 };

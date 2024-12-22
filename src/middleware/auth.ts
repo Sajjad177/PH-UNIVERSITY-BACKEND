@@ -9,7 +9,6 @@ import { User } from '../modules/user/user.model';
 
 //TODO: auth authentication middleware :
 const auth = (...requiredRoles: TUserRole[]) => {
-  console.log('requiredRoles in auth middleware', requiredRoles);
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
@@ -55,7 +54,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     //TODO : authorization : role checking :
     if (requiredRoles && !requiredRoles.includes(role)) {
-      console.log('requiredRoles', requiredRoles);
       throw new AppError('You are not authorized', StatusCodes.UNAUTHORIZED);
     }
 
