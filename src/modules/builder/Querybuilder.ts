@@ -40,9 +40,9 @@ class QueryBuilder<T> {
     return this;
   }
 
-  //TODO-3 : sort --------- :
+  //TODO-3 : sort by createdAt field --------- :
   sort() {
-    // -createdAt means descending order for createdAt field
+    // -createdAt means descending order for createdAt field decending means added recently and ascending means added old
     const sort =
       (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);

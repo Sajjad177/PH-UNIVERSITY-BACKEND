@@ -24,7 +24,7 @@ const userSchema = new Schema<TUser, UserModel>(
   { timestamps: true },
 );
 
-//TODO : createing pre save hook or middleware :
+//TODO : createing pre save hook or middleware for hashing the password :
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
@@ -34,23 +34,23 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-//TODO : createing post save hook or middleware after saving the password :
+//TODO : This middleware is used to remove the password from the response is send to the client :
 userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
 
-// cteating static method function : id checking method
+// cteating static method function : id checking method [this method is used to check the user is exists or not by id]
 userSchema.statics.isUserExistsByCustomID = async function (id: string) {
   return await User.findOne({ id }).select('+password');
 };
 
-// checking user is deleted or not :
+// checking user is deleted or not : [this method is used to check the user is deleted or not]
 userSchema.statics.isUserDeletedChecking = async function (isDeleted: boolean) {
   return await User.findOne({ isDeleted });
 };
 
-// checking user is blocked or not :
+// checking user is blocked or not : 
 userSchema.statics.isUserStatusChecking = async function (status: string) {
   return await User.findOne({ status });
 };

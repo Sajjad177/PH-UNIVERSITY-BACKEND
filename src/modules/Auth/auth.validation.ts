@@ -3,7 +3,7 @@ import z from 'zod';
 const loginValidationSchema = z.object({
   body: z.object({
     id: z.string({ required_error: 'Id is required' }),
-    password : z.string({required_error:"Password is requared"})
+    password: z.string({ required_error: 'Password is requared' }),
   }),
 });
 
@@ -14,15 +14,11 @@ const changePasswordValidationSchema = z.object({
   }),
 });
 
-
 const refreshTokenValidationSchema = z.object({
   cookies: z.object({
     refreshToken: z.string({ required_error: 'Refresh token is required' }),
   }),
 });
-
-
-
 
 export const AuthValidation = {
   loginValidationSchema,

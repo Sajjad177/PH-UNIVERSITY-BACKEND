@@ -10,7 +10,7 @@ const router = Router();
 
 router.get(
   '/',
-  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.FACULTY as TUserRole),
+  auth(USER_ROLE.admin as TUserRole, USER_ROLE.faculty as TUserRole),
   facultyController.getAllFaculties,
 );
 

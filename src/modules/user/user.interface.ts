@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.constant';
 
+// user interface for user model 
 export interface TUser {
   id: string;
   password: string;

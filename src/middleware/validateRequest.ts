@@ -15,3 +15,5 @@ const validateRequest = (schema: AnyZodObject) => {
 };
 
 export default validateRequest;
+
+// This is a good practice to handle async error. and it is a good way to handle async error. 

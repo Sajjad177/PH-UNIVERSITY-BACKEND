@@ -12,14 +12,14 @@ const router = Router();
 
 router.post(
   '/create-user',
-  auth(USER_ROLE.ADMIN as TUserRole), // authorization : role checking :
+  auth(USER_ROLE.admin as TUserRole),   // authorization : role checking :
   validateRequest(StudentValidationZodSchema.createStudentValidationSchema),
   UserController.createStudent,
 );
 
 router.post(
   '/create-faculty',
-  auth(USER_ROLE.ADMIN as TUserRole), 
+  auth(USER_ROLE.admin as TUserRole), 
   validateRequest(facultyValidations.createFacultyValidationSchema),
   UserController.createFaculty,
 );
