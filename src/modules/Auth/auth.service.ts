@@ -43,15 +43,15 @@ const loginUserInDB = async (payload: TLoginUser) => {
   // create access token :
   const accessToken = createToken(
     JwtPayload,
-    config.jwt_access_expires_in as string,
     config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
   );
 
   // create refresh token :
   const refreshToken = createToken(
     JwtPayload,
-    config.jwt_refresh_expires_in as string,
     config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string,
   );
 
   return {
@@ -120,7 +120,10 @@ const changePasswordInDB = async (
 
 const refreshTokenInDB = async (token: string) => {
   // checking refresh token is valid or not:
-  const decoded = jwt.verify(token, config.jwt_refresh_secret as string);
+  const decoded = jwt.verify(
+    token,
+    config.jwt_refresh_secret as string,
+  ) as JwtPayload;
 
   // iat : token issued at time :
   const { userId, iat } = decoded as JwtPayload;
@@ -161,8 +164,8 @@ const refreshTokenInDB = async (token: string) => {
   // create access token :
   const accessToken = createToken(
     JwtPayload,
-    config.jwt_access_expires_in as string,
     config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
   );
 
   return { accessToken };
@@ -197,15 +200,66 @@ const forgetPasswordInDB = async (userId: string) => {
   // create access token :
   const resetToken = createToken(
     JwtPayload,
-    config.jwt_access_expires_in as string,
-    '10m',
+    config.jwt_access_secret as string,
+    config.forget_password_expires_in as string,
   );
 
   // send to email user with reset link :
   const resetUILink = `${config.reset_password_ui_link}?id=${user.id}&token=${resetToken}`;
 
   // dynamic send email and reset link :
-  sendEmail(user.email, `<a href="${resetUILink}">Reset Password</a>`);
+  sendEmail(user.email, resetUILink);
+  // console.log(resetUILink);
+};
+
+const resetPassword = async (
+  paylod: { id: string; newPassword: string },
+  token: string,
+) => {
+  const user = await User.isUserExistsByCustomID(paylod?.id);
+
+  if (!user) {
+    throw new AppError('User is not found', StatusCodes.NOT_FOUND);
+  }
+
+  // checking user is blocked or not :
+  if (user?.status === 'blocked') {
+    throw new AppError('User is blocked', StatusCodes.BAD_REQUEST);
+  }
+
+  // checking token is valid or not:
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+  console.log('decoded', decoded);
+
+  // checking user id is matching with decoded id or not :
+  if (decoded.userId !== paylod.id) {
+    throw new AppError('You are forbidden', StatusCodes.FORBIDDEN);
+  }
+
+  // hash password new password :
+  const hashedNewPassword = await bcrypt.hash(
+    paylod.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  // update password in db :
+  await User.findOneAndUpdate(
+    {
+      id: decoded.userId,
+      role: decoded.role,
+    },
+    {
+      password: hashedNewPassword,
+      needsPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
+  );
+
+
+
 };
 
 export const AuthService = {
@@ -213,4 +267,5 @@ export const AuthService = {
   changePasswordInDB,
   refreshTokenInDB,
   forgetPasswordInDB,
+  resetPassword,
 };

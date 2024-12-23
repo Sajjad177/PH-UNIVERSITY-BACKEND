@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import config from '../config';
 
-//! -------------- Module : 19-2, 19-3-----------
+//! -------------- Module : 19-2, 19-3, 19-4 -----------
 export const sendEmail = async (to: string, html: string) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com', // search what is SMTP ethereal email
