@@ -4,5 +4,4 @@ export const USER_ROLE = {
   STUDENT: 'student',
 } as const; // readonly array can't be changed after declaration
 
-
-
+export const userStatus = ['in-progress', 'blocked'];

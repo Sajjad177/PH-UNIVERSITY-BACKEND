@@ -9,6 +9,7 @@ import { User } from '../modules/user/user.model';
 
 //TODO: auth authentication middleware :
 const auth = (...requiredRoles: TUserRole[]) => {
+  // console.log('auth middleware', requiredRoles);
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
@@ -59,7 +60,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     // adding decoded to express request object and decler a file in interface folder index.d.ts :
     req.user = decoded as JwtPayload;
-
     next();
   });
 };

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // create token for access and refresh token :
 export const createToken = (
@@ -9,4 +9,8 @@ export const createToken = (
   return jwt.sign(JwtPayload, secret, {
     expiresIn,
   });
+};
+
+export const verifyToken = (token: string, secret: string) => {
+  return jwt.verify(token, secret) as JwtPayload;
 };

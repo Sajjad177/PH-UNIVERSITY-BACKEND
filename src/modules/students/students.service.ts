@@ -6,6 +6,8 @@ import { User } from '../user/user.model';
 import { TStudent } from './students.interface';
 import QueryBuilder from '../builder/Querybuilder';
 import { studentSearchableFields } from './students.constant';
+import { verifyToken } from '../Auth/auth.utils';
+import config from '../../config';
 
 //* In academicDepartment refrence the academicFaculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
 
@@ -152,6 +154,8 @@ const updateStudentIntoDB = async (
 
   return result;
 };
+
+
 
 export const StudentService = {
   getAllStudentsFromDB,
