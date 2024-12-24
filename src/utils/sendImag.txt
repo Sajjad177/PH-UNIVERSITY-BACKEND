@@ -7,12 +7,7 @@
 
 
 
-
-
-
-
-
-// create student data -> 
+            ---------------------------- create student data -> 
 
 {
     "password": "student123",
@@ -49,5 +44,66 @@
         "profileImage": "http://example.com/images/janesmith.jpg",
         "admissionSemester": "674c746abac4c7b80e678406",
         "academicDepartment": "674ed162d0694528300b0931"
+    }
+}
+
+
+
+
+
+
+-------------------------------  Faculty data----------------------------------------------
+
+
+{
+    "password": "111111111111111",
+    "faculty": {
+        "id": "FAC123",
+        "user": "6752d778456a71841ee5a1ea",
+        "designation": "Professor",
+        "name": {
+            "firstName": "Sadiya",
+            "middleName": "Tasnim",
+            "lastName": "Zim"
+        },
+        "gender": "female",
+        "dateOfBirth": "1990-05-20",
+        "email": "sadiya@example.com",
+        "contactNo": "+12345",
+        "emergencyContactNo": "+09856",
+        "bloodGroup": "A+",
+        "presentAddress": "123 University Avenue, Cityville, Country",
+        "permanentAddress": "456 Home Street, Townsville, Country",
+        "profileImg": "http://example.com/images/alice.jpg",
+        "academicDepartment": "674ed246d0694528300b0935",
+        "isDeleted": false
+    }
+}
+
+
+
+
+----------------------- admin data ------------------------------------------------
+
+{
+    "password": "admin12345",
+    "admin": {
+        "designation": "Admin",
+        "name": {
+            "firstName": "sajjad",
+            "middleName": "A",
+            "lastName": "Hossain"
+        },
+        "gender": "male",
+        "dateOfBirth": "1985-05-20T00:00:00.000Z",
+        "email": "sajjadsajjad098765@gmail.com",
+        "contactNo": "+1234567890",
+        "emergencyContactNo": "+0987654321",
+        "bloodGroup": "O+",
+        "presentAddress": "123 Street Name, City, Country",
+        "permanentAddress": "456 Another St, City, Country",
+        "profileImg": "http://example.com/images/john_doe.jpg",
+        "isDeleted": false,
+        "fullName": "sajjad A Doe"
     }
 }
