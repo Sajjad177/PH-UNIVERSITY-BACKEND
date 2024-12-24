@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { UserController } from './user.controller';
 import { StudentValidationZodSchema } from '../students/students.zod.validation';
 import validateRequest from '../../middleware/validateRequest';
@@ -8,12 +8,18 @@ import auth from '../../middleware/auth';
 import { USER_ROLE } from './user.constant';
 import { TUserRole } from './user.interface';
 import { UserValidationZodSchema } from './user.validation';
+import { upload } from '../../utils/sendImageToCloudinary';
 
 const router = Router();
 
 router.post(
-  '/create-user',
-  auth(USER_ROLE.ADMIN as TUserRole), // authorization : role checking :
+  '/create-student',
+  auth(USER_ROLE.ADMIN as TUserRole),
+  upload.single('file'), // parse / upload the file
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data); // parse the data from the body
+    next();
+  },
   validateRequest(StudentValidationZodSchema.createStudentValidationSchema),
   UserController.createStudent,
 );

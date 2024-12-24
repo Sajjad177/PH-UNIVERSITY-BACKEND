@@ -1,0 +1,53 @@
+1st -> choose where you upload your image. We are using cloudinary for uploading image.
+
+2nd -> store image tamplate file in your project[for industry standart way, our file name -> "uploads" in root]
+
+3nd -> If you use postman you cannot upload file raw and json way. If you send file use form data.
+
+
+
+
+
+
+
+
+
+// create student data -> 
+
+{
+    "password": "student123",
+    "student": {
+        "id": "54321",
+        "name": {
+            "firstName": "Poulo67",
+            "middleName": "leo",
+            "lastName": "dybala"
+        },
+        "age": 22,
+        "email": "dybala77@example.com",
+        "gender": "male",
+        "dateOfBirth": "2002-02-25",
+        "contactNo": "+118080791",
+        "emergencyContactNo": "+6698978764",
+        "bloodGroup": "A-",
+        "presentAddress": "456 Elm Street, Metropolis, Country",
+        "permanentAddress": "789 Oak Avenue, Villagetown, Country",
+        "guardian": {
+            "fatherName": "George Smith",
+            "fatherContactNo": "+9958657466",
+            "fatherOccupation": "Doctor",
+            "motherName": "Emily Smith",
+            "motherContactNo": "+44766578",
+            "motherOccupation": "Nurse"
+        },
+        "localGuardian": {
+            "name": "Aunt Mary",
+            "contactNo": "+5897876876",
+            "occupation": "Accountant",
+            "address": "123 Local Guardian Lane, Hamlet, Country"
+        },
+        "profileImage": "http://example.com/images/janesmith.jpg",
+        "admissionSemester": "674c746abac4c7b80e678406",
+        "academicDepartment": "674ed162d0694528300b0931"
+    }
+}
