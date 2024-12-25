@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import  { model, Schema } from 'mongoose';
 import { Grade } from './enrolledCourse.constant';
 import {
   TEnrolledCourse,
@@ -103,7 +103,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
   },
 });
 
-const EnrolledCourse = mongoose.model<TEnrolledCourse>(
+const EnrolledCourse = model<TEnrolledCourse>(
   'EnrolledCourse',
   enrolledCourseSchema,
 );
