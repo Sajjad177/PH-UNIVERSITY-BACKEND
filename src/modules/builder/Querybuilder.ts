@@ -67,6 +67,21 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.select(fields);
     return this;
   }
+
+  // pagination meta data Module 20-11
+  async countTotal() {
+    const totalQueries = this.modelQuery.getFilter();
+    const total = await this.modelQuery.model.countDocuments(totalQueries);
+    const page = Number(this?.query?.page) || 1;
+    const limit = Number(this?.query?.limit) || 10;
+    const totalPage = Math.ceil(total / limit);
+    return {
+      total,
+      page,
+      limit,
+      totalPage,
+    };
+  }
 }
 
 export default QueryBuilder;

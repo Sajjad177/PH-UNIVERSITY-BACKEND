@@ -7,7 +7,6 @@ import { TStudent } from './students.interface';
 import QueryBuilder from '../builder/Querybuilder';
 import { studentSearchableFields } from './students.constant';
 
-
 //* In academicDepartment refrence the academicFaculty so we need to populate the academic faculty with the academic department. so we need to use populate method two times.
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   //TODO : build query :
@@ -29,8 +28,13 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
+  const meta = await studentQuery.countTotal();
   const result = await studentQuery.modelQuery;
-  return result;
+
+  return {
+    result,
+    meta,
+  };
 };
 
 const getSingleStudentFromDB = async (studentId: string) => {
@@ -152,8 +156,6 @@ const updateStudentIntoDB = async (
 
   return result;
 };
-
-
 
 export const StudentService = {
   getAllStudentsFromDB,
