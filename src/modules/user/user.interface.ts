@@ -1,14 +1,14 @@
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.constant';
 
-// user interface for user model 
+// user interface for user model
 export interface TUser {
   id: string;
   email: string;
   password: string;
   passwordChangeAt?: Date;
   needsPasswordChange: boolean;
-  role: 'admin' | 'student' | 'faculty';
+  role: 'admin' | 'student' | 'faculty' | 'super-admin';
   isDeleted: boolean;
   status: 'in-progress' | 'blocked';
 }

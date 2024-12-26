@@ -13,7 +13,7 @@ const userSchema = new Schema<TUser, UserModel>(
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
-      enum: ['admin', 'student', 'faculty'],
+      enum: ['admin', 'student', 'faculty','super-admin'],
       required: true,
     },
     isDeleted: { type: Boolean, default: false },
