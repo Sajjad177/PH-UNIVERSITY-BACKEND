@@ -10,18 +10,39 @@ const router = Router();
 
 router.get(
   '/',
-  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.FACULTY as TUserRole),
+  auth(
+    USER_ROLE.ADMIN as TUserRole,
+    USER_ROLE.FACULTY as TUserRole,
+    USER_ROLE.superAdmin as TUserRole,
+  ),
   facultyController.getAllFaculties,
 );
 
-router.get('/:facultyId', facultyController.getSingleFaculty);
+router.get(
+  '/:id',
+  auth(
+    USER_ROLE.ADMIN as TUserRole,
+    USER_ROLE.FACULTY as TUserRole,
+    USER_ROLE.superAdmin as TUserRole,
+  ),
+  facultyController.getSingleFaculty,
+);
 
 router.patch(
-  '/:facultyId',
+  '/:id',
+  auth(
+    USER_ROLE.ADMIN as TUserRole,
+    USER_ROLE.superAdmin as TUserRole,
+    USER_ROLE.FACULTY as TUserRole,
+  ),
   validateRequest(facultyValidations.updateFacultyValidationSchema),
   facultyController.updateFaculty,
 );
 
-router.delete('/:facultyId', facultyController.deleteFaculty);
+router.delete(
+  '/:id',
+  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.superAdmin as TUserRole),
+  facultyController.deleteFaculty,
+);
 
 export const FacultyRoutes = router;

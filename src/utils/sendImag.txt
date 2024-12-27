@@ -77,6 +77,7 @@
         "permanentAddress": "456 Home Street, Townsville, Country",
         "profileImg": "http://example.com/images/alice.jpg",
         "academicDepartment": "674ed246d0694528300b0935",
+        "academicFaculty": "676d9ac44c0c117ddeed04fe",
         "isDeleted": false
     }
 }

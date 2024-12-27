@@ -132,7 +132,6 @@ const updateStudentValidationZodSchema = z.object({
     }),
     guardian: updateGuardianValidationZodSchema.optional(),
     localGuardian: updateLocalGuardianValidationZodSchema.optional(),
-    profileImage: z.string().optional(),
     admissionSemester: z.string().optional(),
     academicDepartment: z.string().optional(),
   }),

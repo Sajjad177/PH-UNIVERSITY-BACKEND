@@ -37,8 +37,8 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
-const getSingleStudentFromDB = async (studentId: string) => {
-  const result = await Student.findById({ id: studentId })
+const getSingleStudentFromDB = async (id: string) => {
+  const result = await Student.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -101,23 +101,6 @@ const updateStudentIntoDB = async (
   // there some data we want to update
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
-  /*  -------- Nono premitive data type update --------
-    Data in database style is like this -> 
-    guardian : {
-      "key" : "value"
-      fatherOccupation : 'teacher'
-    }
-
-    what we want to do it ->    
-    guardian.fatherOccupation = 'teacher'
-    name.firstName = 'John'
-    name.middleName = 'Doe'
-    name.lastName = 'Smith'
-
-    we can update premitive data also like this -> 
-    contactNo : '1234567890'
-  */
-
   const modifiedUpdateData: Record<string, unknown> = {
     ...remainingStudentData,
   };
@@ -142,8 +125,6 @@ const updateStudentIntoDB = async (
       modifiedUpdateData[`localGuardian.${key}`] = value;
     }
   }
-
-  // console.log(modifiedUpdateData);
 
   const result = await Student.findByIdAndUpdate(
     studentId,

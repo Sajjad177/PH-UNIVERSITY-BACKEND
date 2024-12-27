@@ -8,23 +8,34 @@ import { TUserRole } from '../user/user.interface';
 
 const router = Router();
 
-router.get('/', StudentController.getAllStudents);
+router.get(
+  '/',
+  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.superAdmin as TUserRole),
+  StudentController.getAllStudents,
+);
 
 // there admin and faculty can get any student data :
 router.get(
   '/:id',
-  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.FACULTY as TUserRole),
+  auth(
+    USER_ROLE.ADMIN as TUserRole,
+    USER_ROLE.FACULTY as TUserRole,
+    USER_ROLE.superAdmin as TUserRole,
+  ),
   StudentController.getSingleStudent,
 );
 
-router.delete('/:id', StudentController.deleteStudent);
+router.delete(
+  '/:id',
+  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.superAdmin as TUserRole),
+  StudentController.deleteStudent,
+);
 
 router.patch(
   '/:id',
+  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.superAdmin as TUserRole),
   validateRequest(StudentValidationZodSchema.updateStudentValidationZodSchema),
   StudentController.updateStudent,
 );
-
-
 
 export const StudentRoutes = router;

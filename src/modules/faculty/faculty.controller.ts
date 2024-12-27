@@ -4,7 +4,6 @@ import sendResponse from '../../utils/sendResponse';
 import { facultyServices } from './faculty.services';
 
 //! we are crating create faculty in user controller and we are not creating create faculty in faculty controller. We handle student, admin, faculty in user controller.
-
 const getAllFaculties = catchAsync(async (req, res) => {
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
 
@@ -17,8 +16,8 @@ const getAllFaculties = catchAsync(async (req, res) => {
 });
 
 const getSingleFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
-  const result = await facultyServices.getSingleFacultyFromDB(facultyId);
+  const { id } = req.params;
+  const result = await facultyServices.getSingleFacultyFromDB(id);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -29,10 +28,10 @@ const getSingleFaculty = catchAsync(async (req, res) => {
 });
 
 const updateFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const {  id } = req.params;
   const { faculty: facultyData } = req.body;
   const result = await facultyServices.updateFacultyIntoDB(
-    facultyId,
+    id,
     facultyData,
   );
 
@@ -45,8 +44,8 @@ const updateFaculty = catchAsync(async (req, res) => {
 });
 
 const deleteFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
-  const result = await facultyServices.deleteFacultyFromDB(facultyId);
+  const { id } = req.params;
+  const result = await facultyServices.deleteFacultyFromDB(id);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -57,7 +56,7 @@ const deleteFaculty = catchAsync(async (req, res) => {
 });
 
 export const facultyController = {
-  // createFaculty,
+  
   getAllFaculties,
   getSingleFaculty,
   updateFaculty,
