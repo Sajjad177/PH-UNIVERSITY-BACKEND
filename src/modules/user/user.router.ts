@@ -14,7 +14,7 @@ const router = Router();
 
 router.post(
   '/create-student',
-  auth(USER_ROLE.ADMIN as TUserRole),
+  auth(USER_ROLE.ADMIN as TUserRole, USER_ROLE.superAdmin as TUserRole),
   upload.single('file'), // parse / upload the file
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data); // parse the data from the body

@@ -76,7 +76,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
       type: String,
       required: [true, 'Permanent address is required'],
     },
-    profileImg: { type: String },
+    profileImg: { type: String, default: '' },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -106,7 +106,7 @@ adminSchema.pre('find', function (next) {
   next();
 });
 
-// filter out deleted documents 
+// filter out deleted documents
 adminSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();

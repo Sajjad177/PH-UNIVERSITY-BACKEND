@@ -14,7 +14,7 @@
     "student": {
         "id": "54321",
         "name": {
-            "firstName": "Poulo67",
+            "firstName": "Poulo",
             "middleName": "leo",
             "lastName": "dybala"
         },
@@ -42,8 +42,9 @@
             "address": "123 Local Guardian Lane, Hamlet, Country"
         },
         "profileImage": "http://example.com/images/janesmith.jpg",
-        "admissionSemester": "674c746abac4c7b80e678406",
-        "academicDepartment": "674ed162d0694528300b0931"
+        "admissionSemester": "676d9eda4c0c117ddeed0509",
+        "academicDepartment": "676d9d3d4c0c117ddeed0500",
+        "academicFaculty" : "676d9ac44c0c117ddeed04fe"
     }
 }
 

@@ -9,10 +9,8 @@ let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.Mongodb_url as string);
-
     // add super-Admin :
     seedSuperAdmin();
-
     server = app.listen(config.port, () => {
       console.log(`Server is running on port ${config.port}`);
     });
