@@ -20,9 +20,10 @@ router.post(
   '/change-password',
   auth(
     //every user can change password
-    USER_ROLE.ADMIN as TUserRole, 
+    USER_ROLE.ADMIN as TUserRole,
     USER_ROLE.FACULTY as TUserRole,
     USER_ROLE.STUDENT as TUserRole,
+    USER_ROLE.superAdmin as TUserRole,
   ),
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthController.changePassword,
