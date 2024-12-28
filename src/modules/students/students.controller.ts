@@ -11,7 +11,8 @@ const getAllStudents = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Students fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

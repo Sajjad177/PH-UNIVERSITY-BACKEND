@@ -23,7 +23,8 @@ const getAllSemesterRegistration = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'All Semester Registration retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

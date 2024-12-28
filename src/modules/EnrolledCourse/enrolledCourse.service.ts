@@ -9,6 +9,7 @@ import { SemesterRegistration } from '../semesterRegistration/semesterRegistrati
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { calculateGradeAndPoints } from './enrolledCourse.utils';
+import QueryBuilder from '../builder/Querybuilder';
 
 const createEnrollCourseInDB = async (
   userId: string,
@@ -166,6 +167,35 @@ const createEnrollCourseInDB = async (
   }
 };
 
+const getMyEnrolledCoursesFromDb = async (
+  studentId: string,
+  query: Record<string, unknown>,
+) => {
+  const student = await Student.findOne({ id: studentId });
+  if (!student) {
+    throw new AppError('Student not found !', StatusCodes.NOT_FOUND);
+  }
+
+  const enrolledCourseQuery = new QueryBuilder(
+    EnrolledCourse.find({ student: student._id }).populate(
+      'semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty',
+    ),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await enrolledCourseQuery.modelQuery;
+  const meta = await enrolledCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 const updateEnrolledCourseMarksIntoDB = async (
   facultyId: string,
   payload: Partial<TEnrolledCourse>,
@@ -224,7 +254,7 @@ const updateEnrolledCourseMarksIntoDB = async (
       Math.ceil(finalTerm);
 
     const result = calculateGradeAndPoints(totalMarks);
-    
+
     // update in DB
     modifiedData.grade = result.grade;
     modifiedData.gradePoints = result.gradePoints;
@@ -250,5 +280,6 @@ const updateEnrolledCourseMarksIntoDB = async (
 
 export const enrolledCourseSevice = {
   createEnrollCourseInDB,
+  getMyEnrolledCoursesFromDb,
   updateEnrolledCourseMarksIntoDB,
 };

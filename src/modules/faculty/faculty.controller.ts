@@ -3,7 +3,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { facultyServices } from './faculty.services';
 
-//! we are crating create faculty in user controller and we are not creating create faculty in faculty controller. We handle student, admin, faculty in user controller.
+// we are crating create faculty in user controller and we are not creating create faculty in faculty controller. We handle student, admin, faculty in user controller.
 const getAllFaculties = catchAsync(async (req, res) => {
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
 
@@ -11,7 +11,8 @@ const getAllFaculties = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: ' Get all Faculties successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 
