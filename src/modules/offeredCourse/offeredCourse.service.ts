@@ -278,10 +278,60 @@ const getMyOfferedCourseFromDB = async (userId: string) => {
         as: 'enrolledCourses',
       },
     },
-    // checking with mongodb aggration if course is exist in enrolled course then we are remove this from offered Course.
+    // get completed course id.
+    {
+      $lookup: {
+        from: 'enrolledcourses',
+        let: {
+          currentStudent: student._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ['$student', '$$currentStudent'],
+                  },
+                  {
+                    $eq: ['$isCompleted', true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'completedCourses',
+      },
+    },
     {
       $addFields: {
-        // in compere in array
+        completedCoursesIds: {
+          $map: {
+            input: '$completedCourses',
+            as: 'completed',
+            in: '$$completed.course',
+          },
+        },
+      },
+    },
+
+    {
+      $addFields: {
+        // checking preRequisutes full filled. There some course have preRequisiteCourses and some course donot have preRequisiteCourses.
+        isPreRequisutesFullFilled: {
+          $or: [
+            { $eq: ['$course.preRequisiteCourses', []] }, // no prepreRequisiteCourses
+            {
+              $setIsSubset: [
+                '$course.preRequisiteCourses.course',
+                '$completedCoursesIds',
+              ],
+            }, // have preRequisiteCourses
+          ],
+        },
+
+        // checking with mongodb aggration if course is exist in enrolled course then we are remove this from offered Course.
         isAlreadyEnrolled: {
           $in: [
             '$course._id',
@@ -298,9 +348,11 @@ const getMyOfferedCourseFromDB = async (userId: string) => {
       },
     },
     //isAlreadyEnrolled: true removing. We are match only false value because false value is not enrolled. So those course offered me for enrolling.
+    // isPreRequisutesFullFilled those pre Requisutes is not completed those data is not show us.
     {
       $match: {
         isAlreadyEnrolled: false,
+        isPreRequisutesFullFilled: true,
       },
     },
   ]);
