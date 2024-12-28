@@ -30,6 +30,12 @@ router.get(
 );
 
 router.get(
+  '/my-offered-course',
+  auth(USER_ROLE.STUDENT as TUserRole),
+  OfferedCourseController.getMyOfferedCourse,
+);
+
+router.get(
   '/:id',
   auth(
     USER_ROLE.ADMIN as TUserRole,
@@ -54,6 +60,3 @@ router.delete(
 );
 
 export const OfferedCourseRoutes = router;
-
-
-

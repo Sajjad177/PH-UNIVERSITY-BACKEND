@@ -8,6 +8,8 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { hasTimeConflict } from './offeredCourse.utils';
+import QueryBuilder from '../builder/Querybuilder';
+import { Student } from '../students/students.schema';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
@@ -183,8 +185,126 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
-const getAllOfferedCourseFromDB = async () => {
-  const result = await OfferedCourse.find();
+const getAllOfferedCourseFromDB = async (query: Record<string, unknown>) => {
+  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await offeredCourseQuery.modelQuery;
+  const meta = await offeredCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
+//! Module 21-9 and 21-10------------------------------------------
+const getMyOfferedCourseFromDB = async (userId: string) => {
+  const student = await Student.findOne({ id: userId });
+  if (!student) {
+    throw new AppError('User is not found', StatusCodes.NOT_FOUND);
+  }
+
+  // find current ongoing semester :
+  const currentOnGoingRegistrationSemester = await SemesterRegistration.findOne(
+    {
+      status: 'ONGOING',
+    },
+  );
+
+  if (!currentOnGoingRegistrationSemester) {
+    throw new AppError(
+      'There is no ongoing semester Registration',
+      StatusCodes.NOT_FOUND,
+    );
+  }
+
+  const result = await OfferedCourse.aggregate([
+    {
+      $match: {
+        semesterRegistration: currentOnGoingRegistrationSemester?._id,
+        academicFaculty: student.academicFaculty,
+        academicDepartment: student.academicDepartment,
+      },
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+      },
+    },
+    {
+      $unwind: '$course', // remove array
+    },
+    {
+      $lookup: {
+        from: 'enrolledcourses',
+        // add value in aggration
+        let: {
+          currentOnGoingRegistrationSemester:
+            currentOnGoingRegistrationSemester?._id,
+          currentStudent: student._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  // 1st condition semesterRegistration match
+                  {
+                    $eq: [
+                      '$semesterRegistration',
+                      '$$currentOnGoingRegistrationSemester',
+                    ],
+                  },
+                  // 2nd condition student with current student match
+                  {
+                    $eq: ['$student', '$$currentStudent'],
+                  },
+                  // 3rd condition with isEnrolled= true
+                  {
+                    $eq: ['$isEnrolled', true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'enrolledCourses',
+      },
+    },
+    // checking with mongodb aggration if course is exist in enrolled course then we are remove this from offered Course.
+    {
+      $addFields: {
+        // in compere in array
+        isAlreadyEnrolled: {
+          $in: [
+            '$course._id',
+            {
+              // aggration map :
+              $map: {
+                input: '$enrolledCourses',
+                as: 'enroll',
+                in: '$$enroll.course',
+              },
+            },
+          ],
+        },
+      },
+    },
+    //isAlreadyEnrolled: true removing. We are match only false value because false value is not enrolled. So those course offered me for enrolling.
+    {
+      $match: {
+        isAlreadyEnrolled: false,
+      },
+    },
+  ]);
+
   return result;
 };
 
@@ -205,9 +325,7 @@ const deleteOfferedCourseFromDB = async (id: string) => {
 
   // stape 2 : check if the semesterRegistration is UPCOMING :
   const isSemesterRegistrationUpcoming =
-    await SemesterRegistration.findById(semesterRegistration).select(
-      'status',
-    );
+    await SemesterRegistration.findById(semesterRegistration).select('status');
 
   if (isSemesterRegistrationUpcoming?.status !== 'UPCOMING') {
     throw new AppError(
@@ -215,7 +333,6 @@ const deleteOfferedCourseFromDB = async (id: string) => {
       StatusCodes.BAD_REQUEST,
     );
   }
-
 
   const result = await OfferedCourse.findByIdAndDelete(id);
   return result;
@@ -225,6 +342,7 @@ export const OfferedCourseService = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
+  getMyOfferedCourseFromDB,
   getSingleOfferedCourseFromDB,
   deleteOfferedCourseFromDB,
 };
